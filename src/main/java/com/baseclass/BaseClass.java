@@ -1,14 +1,18 @@
-/**
- * 
- */
 package com.baseclass;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -22,6 +26,7 @@ import org.openqa.selenium.support.ui.Select;
 public class BaseClass {
      
 	public static WebDriver driver;
+	public static String value;
 	
 	
 	// browser launch  and maximizing
@@ -51,7 +56,6 @@ public class BaseClass {
 	{
       driver.get(URL);
 	}
-	
 	
 	
 	// sendKeys method
@@ -132,15 +136,16 @@ public class BaseClass {
 	
 	//Taking Screen shot
 
-    public static void takeScreenShot(String imgName) throws IOException {
+    public static void takeScreenShot(String imgName) throws IOException 
+    {
 	
     TakesScreenshot ts = (TakesScreenshot)driver;
     File source = ts.getScreenshotAs(OutputType.FILE);
     File destination = new File("C:\\Users\\91888\\eclipse-workspace\\Maven\\ScreenShot\\"+imgName+".png");
     FileUtils.copyFile(source,destination);
     
-   
-}
+   }
+    
     //JavaScript Executor
    
 	public static void usingJavaScript(String action, WebElement element, String keys) 
@@ -176,4 +181,29 @@ public class BaseClass {
 		}
 
 	}	
+	
+	// data Driven framework
+	public static String dataDrivenExcel(String path, int rowIndex, int cellIndex) throws IOException 
+	{
+		File f = new File(path);
+		FileInputStream fis = new FileInputStream(f);
+		Workbook w = new XSSFWorkbook(fis);
+		Sheet sheetAt = w.getSheetAt(0);
+		Row row2 = sheetAt.getRow(rowIndex);
+		Cell cell = row2.getCell(cellIndex);
+		CellType ct = cell.getCellType();
+		if(ct.equals(CellType.STRING))
+		{
+			String stringCellValue = cell.getStringCellValue();
+			value = stringCellValue;
+		}
+		else if (ct.equals(CellType.NUMERIC))
+		{
+			double numericCellValue = cell.getNumericCellValue();
+			 
+			int num = (int)numericCellValue;
+			value = String.valueOf(num);
+		}
+		return value;
+	}
 }

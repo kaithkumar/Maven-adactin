@@ -3,75 +3,89 @@ package com.runner;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
 import com.baseclass.BaseClass;
-import com.pageobjectmodel.AdressAndPaymentPage;
-import com.pageobjectmodel.ConformationPage;
-import com.pageobjectmodel.HomePage;
-import com.pageobjectmodel.SearchHotelPage;
-import com.pageobjectmodel.SelectHotelPage;
+import com.sdp.PageObjectManager;
+import com.sdp.FileReaderManager;
 
 public class RunnerClass extends BaseClass {
 	public static WebDriver driver = webDriverLaunch("chrome");
-    public static HomePage hp = new HomePage(driver);
-	public static SearchHotelPage search= new SearchHotelPage(driver);
-	public static SelectHotelPage select = new SelectHotelPage(driver);
-	public static AdressAndPaymentPage ap = new AdressAndPaymentPage(driver);
-	public static ConformationPage cp = new ConformationPage(driver);
 	
+	// logger
+	public static Logger log = Logger.getLogger(RunnerClass.class);
+	
+    public static PageObjectManager pom = new PageObjectManager(driver);
+	
+  
 	public static void main(String[] args) throws IOException {
 		
-		getUrl("https://adactinhotelapp.com/");
+		PropertyConfigurator.configure("log4j.properties");
 		
-		sendingParameters(hp.getUserName_Box(), "kaithkumar");
+		String url = FileReaderManager.getInstanceFRM().getInstanceFR().url();
+		getUrl(url);
+		log.info("url launched");
 		
-		sendingParameters(hp.getPassWord_Box(),"123456");
+		String username = FileReaderManager.getInstanceFRM().getInstanceFR().username();
+		sendingParameters(pom.getObjectHomePage().getUserName_Box(), username);
 		
-		clickingElement(hp.getLogin_Button());
+		//String password = FileReaderManager.getInstanceFRM().getInstanceFR().password();
+		String dataDrivenExcel = dataDrivenExcel("C:\\Users\\91888\\OneDrive\\Desktop\\project task\\Adactin testcases.xlsx",2,5);
+		sendingParameters(pom.getObjectHomePage().getPassWord_Box(),dataDrivenExcel);
 		
-		dropDownCheck(search.getLocation_option());
-		dropDown("byvisibletext", search.getLocation_option(), "London");
+		clickingElement(pom.getObjectHomePage().getLogin_Button());
+		log.info("login completed");
+		
+		//dropDownCheck(pom.getObjectSearchHotelPage().getLocation_option());
+		dropDown("byvisibletext", pom.getObjectSearchHotelPage().getLocation_option(), "London");
 	
-		dropDown("byvisibletext", search.getHotels(), "Hotel Creek");
+		dropDown("byvisibletext", pom.getObjectSearchHotelPage().getHotels(), "Hotel Creek");
 
-		dropDown("byindex", search.getRoomType(), "2");
+		dropDown("byindex", pom.getObjectSearchHotelPage().getRoomType(), "2");
 		
-		dropDown("byindex", search.getNos(), "1");
+		dropDown("byindex", pom.getObjectSearchHotelPage().getNos(), "1");
 	
-		dropDown("byindex", search.getAdu(), "1");
+		dropDown("byindex", pom.getObjectSearchHotelPage().getAdu(), "1");
 		
-		dropDown("byindex", search.getCh(), "1");
+		dropDown("byindex", pom.getObjectSearchHotelPage().getCh(), "1");
 	
-		clickingElement(search.getSubmit());
+		clickingElement(pom.getObjectSearchHotelPage().getSubmit());
 		
 		timeOuts(5, TimeUnit.SECONDS);
-		clickingElement(select.getRadioButton());
+		clickingElement(pom.getObjectSelectHotelPage().getRadioButton());
 		
-		clickingElement(select.getContinue_button());
+		clickingElement(pom.getObjectSelectHotelPage().getContinue_button());
+		log.info("search hotel page complete");
+		String firstname = FileReaderManager.getInstanceFRM().getInstanceFR().firstname();
+		sendingParameters(pom.getObjectAdressAndPaymentPage().getFn(), firstname);
 		
-		sendingParameters(ap.getFn(), "kk");
+		String lasttname = FileReaderManager.getInstanceFRM().getInstanceFR().lasttname();
+		sendingParameters(pom.getObjectAdressAndPaymentPage().getLn(), lasttname);
 		
-		sendingParameters(ap.getLn(), "kk");
+		String address = FileReaderManager.getInstanceFRM().getInstanceFR().address();
+		sendingParameters(pom.getObjectAdressAndPaymentPage().getAd(), address);
 		
-		sendingParameters(ap.getAd(), "kk");
+		String ccnumber = FileReaderManager.getInstanceFRM().getInstanceFR().ccnumber();
+		sendingParameters(pom.getObjectAdressAndPaymentPage().getCc(), ccnumber);
 		
-		sendingParameters(ap.getCc(), "1234567891234567");
+		dropDown("byindex", pom.getObjectAdressAndPaymentPage().getCreditCard(), "2");
 		
-		dropDown("byindex", ap.getCreditCard(), "2");
+		dropDown("byindex", pom.getObjectAdressAndPaymentPage().getMonth(), "2");
 		
-		dropDown("byindex", ap.getMonth(), "2");
+		dropDown("byindex", pom.getObjectAdressAndPaymentPage().getYear(), "12");
 		
-		dropDown("byindex", ap.getYear(), "12");
+		String cvv = FileReaderManager.getInstanceFRM().getInstanceFR().cvv();
+		sendingParameters(pom.getObjectAdressAndPaymentPage().getCvv(),cvv);
 		
-		sendingParameters(ap.getCvv(),"1234");
+		clickingElement(pom.getObjectAdressAndPaymentPage().getBook());
+		log.info("address page completed");
 		
-		clickingElement(ap.getBook());
-		
-		clickingElement(cp.getLink());
+		clickingElement(pom.getConformationPage().getLink());
+		log.info("confromation page completed");
 		
 		takeScreenShot("adactin");
-		
+		log.info("screenshot taken");
 	}
 
 }

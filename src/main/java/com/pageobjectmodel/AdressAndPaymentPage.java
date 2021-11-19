@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.pageobjectmodel;
 
 import org.openqa.selenium.WebDriver;
@@ -8,10 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-/**
- * @author 91888
- *
- */
+
 public class AdressAndPaymentPage {
  public WebDriver driver;
  
@@ -20,7 +15,6 @@ public class AdressAndPaymentPage {
 	 this.driver=driver;
 	 PageFactory.initElements(driver, this);
  }
- 
  
 	@FindBy(id="first_name")
 	private WebElement fn;
