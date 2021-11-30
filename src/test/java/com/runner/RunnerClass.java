@@ -86,6 +86,7 @@ public class RunnerClass extends BaseClass {
 		
 		takeScreenShot("adactin");
 		log.info("screenshot taken");
+		
 	}
 
 }
